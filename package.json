@@ -1,0 +1,14 @@
+{
+  "name": "backup-file-per-n-changes",
+  "version": "1.0.0",
+  "description": "Script that saves a backup of file(s) after every n changes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "md5-file": "^4.0.0",
+    "node-watch": "^0.5.8"
+  }
+}
