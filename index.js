@@ -4,7 +4,7 @@ const md5File = require('md5-file');
 const watch = require('node-watch');
 
 const [,, ...args] = process.argv;
-const outdir = path.join(__dirname, 'backups');
+let outdir = path.join(__dirname, 'backups');
 
 let files = [];
 let changes = {};
@@ -40,9 +40,19 @@ function copyFile(source, target, cb) {
 const usageMsg = 'Usage:\n\tnode index.js file_1 file_2 ... file_N [--n=numberOfChangesToCreateBackups]';
 if (args.length){
   const nRe = /^--n=(\d+)$/;
+  const outRe = /^--o=(.*)$/;
   for (let i = 0; i < args.length; i++){
     if (nRe.test(args[i])){
       numChangesPerBackup = Number(nRe.exec(args[i])[1]);
+    }
+    else if (outRe.test(args[i])){
+      let out = outRe.exec(args[i])[1];
+      if (fs.existsSync(out)){
+      	outdir = out;
+      } else {
+      	console.log(`"${out}" is an invalid out directory.`)
+      	process.exit(1);
+      }
     } else {
       files.push(args[i]);
       if (!fs.existsSync(args[i])){
@@ -69,6 +79,8 @@ console.log('Watching files:');
 files.forEach(f => {
   console.log(`\t${path.resolve(f)}`)
 })
+console.log('\nBackup output directory:');
+console.log(`\t${outdir}`);
 console.log(`\nCreating backup files every ${numChangesPerBackup} changes.`);
 
 // Create backup directory if does not exist
